@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const cors = require('cors');
+const path = require("path")
 app.use(bodyParser.json()) // to process params
 
 var mysql = require('mysql');
@@ -28,6 +29,18 @@ app.use(cors())
 
 
 var controler_get = {
+
+
+	"describe": function(req, res) {
+		var vals = []
+		var sql = "describe colleges;"
+		con.query(sql, function(err, result) {
+			for(var a in result) {
+				vals.push(result[a]["Field"])
+			}
+			res.json({"values": vals})
+		})
+	},
 
 	"filter" : function(req, res) {
 		var param = req.body
@@ -72,10 +85,25 @@ app.get("/edi/:command/:param",(req, res)=>{
 	controler_get[req.params.command](req, res);
 })
 
+app.post("/edi/:command", (req, res) => {
+	controler_get[req.params.command](req, res);
+})
+
 
 app.get("/edi/:command",(req, res)=>{
 	controler_get[req.params.command](req, res);
 })
+
+
+
+var clientPath = "/client/build"
+
+
+app.use(express.static(path.join(__dirname, clientPath)));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, clientPath, "index.html"));
+});
 
 
 app.listen(8000, () => console.log("server is listening on port 8000, happy coding"))
