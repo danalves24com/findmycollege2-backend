@@ -67,7 +67,16 @@ var controler_get = {
 		con.query(sql, function(err, result) {
 			res.send(result)
 		})
-	},	
+	},
+	"query": function(req, res) {
+		var param = req.params.param
+		var sql = `select * from colleges where NAME like '%${param}%' OR WEBSITE like '%${param}%' OR LOCATION like '%${param}%';`
+		console.log(sql)
+		con.query(sql, function(err, result) {
+//			console.log(result)
+			res.json(result)
+		})
+	},
 	"get_all": function(req, res){
 		var param = req.params.param==undefined?1:req.params.param;
 		var step= 10
