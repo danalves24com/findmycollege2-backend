@@ -69,11 +69,18 @@ var controler_get = {
 		})
 	},	
 	"get_all": function(req, res){
-		var param = req.params.param==undefined?10:req.params.param;
+		var param = req.params.param==undefined?1:req.params.param;
+		var step= 10
+		var max = step*parseInt(param)
+		var min = max - step;
 		var sql = "select * from colleges;";
 		con.query(sql, (err, result) => {
 			if(err) throw err;
-			res.send(result)
+			var out = []			
+			for(var i = min; i < max; i += 1 ) {
+				out.push(result[i])
+			}
+			res.send(out)
 		})
 //		res.send("sending all "+param)
 	}
